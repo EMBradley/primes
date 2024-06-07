@@ -82,14 +82,14 @@ A prime generator, using the Trial Division method.
 Create with `let mut pset = TrialDivision::new()`, and then use `pset.iter()` to iterate over all
 primes.
 **/
-#[derive(Default, Clone)]
+#[derive(Clone)]
 pub struct TrialDivision {
     lst: Vec<u64>,
 }
 
 const WHEEL30: [u64; 8] = [1, 7, 11, 13, 17, 19, 23, 29];
 
-#[derive(Default, Copy, Clone)]
+#[derive(Copy, Clone)]
 struct Wheel30 {
     base: u64,
     ix: usize,
@@ -107,13 +107,19 @@ impl Wheel30 {
     }
 }
 
+impl Default for Wheel30 {
+    fn default() -> Self {
+        Wheel30 { base: 0, ix: 1 }
+    }
+}
+
 /**
 A prime generator, using the Sieve of Eratosthenes method. This is asymptotically more efficient
 than the Trial Division method, but slower earlier on.
 
 Create with `let mut pset = Sieve::new()`, and then use `pset.iter()` to iterate over all primes.
 **/
-#[derive(Default, Clone)]
+#[derive(Clone)]
 pub struct Sieve {
     primes: Vec<u64>,
     wheel: Wheel30,
@@ -142,6 +148,12 @@ impl TrialDivision {
     }
 }
 
+impl Default for TrialDivision {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl PrimeSetBasics for TrialDivision {
     /// Finds one more prime, and adds it to the list
     fn expand(&mut self) {
@@ -167,6 +179,12 @@ impl PrimeSetBasics for TrialDivision {
     /// Return all primes found so far as a slice
     fn list(&self) -> &[u64] {
         &self.lst[..]
+    }
+}
+
+impl Default for Sieve {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

@@ -145,3 +145,13 @@ fn test_sieve() {
 
     assert_eq!(sieved, trialled);
 }
+
+// Test that the Sieve Default method works
+#[test]
+fn test_default() {
+    let mut sieve = Sieve::default();
+
+    let n = sieve.get(5);
+
+    assert_eq!(n, 13);
+}
