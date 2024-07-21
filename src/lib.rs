@@ -81,7 +81,7 @@ A prime generator, using the Trial Division method.
 
 Create with `let mut pset = TrialDivision::new()`, and then use `pset.iter()` to iterate over all
 primes.
-**/
+*/
 #[derive(Clone)]
 pub struct TrialDivision {
     lst: Vec<u64>,
@@ -96,6 +96,10 @@ const WHEEL_2357: [u64; WHEEL_LENGTH] = [
     187, 191, 193, 197, 199, 209,
 ];
 
+/*
+A factorization wheel that enables iteration over all positive integers that are coprime with
+all of the primes in `FIRST_PRIMES`.
+*/
 #[derive(Debug, Clone, Copy)]
 struct Wheel {
     offset: u64,
@@ -105,22 +109,14 @@ struct Wheel {
 }
 
 /**
-A prime generator, using the Sieve of Eratosthenes method. This is asymptotically more efficient
-than the Trial Division method, but slower earlier on.
+A prime generator, using the Sieve of Eratosthenes method.
 
 Create with `let mut pset = Sieve::new()`, and then use `pset.iter()` to iterate over all primes.
-**/
+*/
 #[derive(Clone)]
 pub struct Sieve {
     primes: Vec<u64>,
     wheel: Wheel,
-
-    // Keys are composites, values are prime factors.
-    //
-    // Every prime is in here once.
-    //
-    // Each entry corresponds to the last composite "crossed off" by the given prime,
-    // not including any composite less than the values in 'primes'.
     sieve: BinaryHeap<Reverse<Wheel>>,
 }
 
