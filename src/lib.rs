@@ -87,15 +87,6 @@ pub struct TrialDivision {
     lst: Vec<u64>,
 }
 
-const FIRST_PRIMES: [u64; 4] = [2, 3, 5, 7];
-const WHEEL_LENGTH: usize = 48;
-const WHEEL_CIRCUMFERENCE: u64 = WHEEL_2357[WHEEL_LENGTH - 1] + 1;
-const WHEEL_2357: [u64; WHEEL_LENGTH] = [
-    1, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101,
-    103, 107, 109, 113, 121, 127, 131, 137, 139, 143, 149, 151, 157, 163, 167, 169, 173, 179, 181,
-    187, 191, 193, 197, 199, 209,
-];
-
 /*
 A factorization wheel that enables iteration over all positive integers that are coprime with
 all of the primes in `FIRST_PRIMES`.
@@ -129,6 +120,15 @@ pub struct PrimeSetIter<'a, P: PrimeSet> {
 }
 
 impl Wheel {
+    const FIRST_PRIMES: [u64; 4] = [2, 3, 5, 7];
+    const BASE_LENGTH: usize = 48;
+    const CIRCUMFERENCE: u64 = Self::BASE[Self::BASE_LENGTH - 1] + 1;
+    const BASE: [u64; Self::BASE_LENGTH] = [
+        1, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101,
+        103, 107, 109, 113, 121, 127, 131, 137, 139, 143, 149, 151, 157, 163, 167, 169, 173, 179,
+        181, 187, 191, 193, 197, 199, 209,
+    ];
+
     fn new() -> Self {
         Self {
             offset: 0,
@@ -149,14 +149,14 @@ impl Iterator for Wheel {
     type Item = u64;
 
     fn next(&mut self) -> Option<u64> {
-        if self.index + 1 >= WHEEL_LENGTH {
+        if self.index + 1 >= Self::BASE_LENGTH {
             self.index = 0;
-            self.offset += WHEEL_CIRCUMFERENCE;
+            self.offset += Self::CIRCUMFERENCE;
         } else {
             self.index += 1;
         }
 
-        self.value = self.factor * (self.offset + WHEEL_2357[self.index]);
+        self.value = self.factor * (self.offset + Self::BASE[self.index]);
         Some(self.value)
     }
 }
@@ -232,7 +232,7 @@ impl Sieve {
     /// A new prime generator, primed with 2 and 3
     pub fn new() -> Self {
         Self {
-            primes: FIRST_PRIMES.to_vec(),
+            primes: Wheel::FIRST_PRIMES.to_vec(),
             sieve: BinaryHeap::new(),
             wheel: Wheel::new(),
         }
